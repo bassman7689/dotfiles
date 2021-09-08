@@ -1,0 +1,163 @@
+#!/bin/bash
+
+SECONDS_IN_MINUTE=60
+SECONDS_IN_HOUR=$(($SECONDS_IN_MINUTE*60))
+SECONDS_IN_DAY=$(($SECONDS_IN_HOUR*24))
+NVIM=/usr/local/bin/nvim
+CURRENT_TIME=$(date +%s)
+DEBUG=false
+
+format_color() {
+  local bg=$1
+  local red=$2
+  local green=$3
+  local blue=$4
+  echo "\x1b[${bg};2;${red};${green};${blue}m"
+}
+
+format_fg_color() {
+  format_color 38 $1 $2 $3
+}
+
+format_bg_color() {
+  format_color 48 $1 $2 $3
+}
+
+CLEAR_COLOR='\x1b[m'
+RED_FG=$(format_fg_color 255 0 0)
+YELLOW_FG=$(format_fg_color 255 255 0)
+
+current_timestamp() {
+  date +%s
+}
+
+press_any_key() {
+  echo "Press any key to continue"
+  stty -echo
+  read -n 1
+  stty echo
+}
+
+echo_log() {
+  local color=$1
+  local level=$2
+  local message=${@:3}
+  printf "$(current_timestamp):${color}${level}:$message ${CLEAR_COLOR}\n"
+}
+
+debug() {
+  if $DEBUG; then
+    echo_log "${YELLOW_FG}" "DEBUG" $@
+  fi
+}
+
+nvim_exists() {
+  test -f $NVIM
+}
+
+nvim_age() {
+  local NVIM_MTIME=$(stat -f %m $NVIM)
+  echo "$(($CURRENT_TIME - $NVIM_MTIME))"
+}
+
+is_nightly_nvim_too_old() {
+  test $(nvim_age) -ge $SECONDS_IN_DAY
+}
+
+is_nvim_binary_writable() {
+  test -w $NVIM
+}
+
+install_or_update_nvim() {
+  if nvim_exists; then
+    HOMEBREW_TEMP=$HOME/temp brew upgrade --fetch-HEAD neovim
+  else
+    HOMEBREW_TEMP=$HOME/temp brew install --HEAD neovim
+  fi
+}
+
+pluralize_with_s() {
+  local word=$1
+  local num=$2
+  if [[ $num -eq 1 ]] || [[ "$num" == "-1" ]]; then
+    echo "$num $word"
+  else
+    echo "$num ${word}s"
+  fi
+}
+
+human_time() {
+  local seconds=$1
+  local time=""
+  if [[ $seconds -gt $SECONDS_IN_DAY ]]; then
+    days=$((seconds / $SECONDS_IN_DAY))
+    time=$(echo $time $(pluralize_with_s Day $days))
+    seconds=$((seconds % $SECONDS_IN_DAY))
+  fi
+
+  if [[ $seconds -gt $SECONDS_IN_HOUR ]]; then
+    hours=$((seconds / $SECONDS_IN_HOUR))
+    time=$(echo $time $(pluralize_with_s Hour $hours))
+    seconds=$((seconds % $SECONDS_IN_HOUR))
+  fi
+
+  if [[ $seconds -gt $SECONDS_IN_MINUTE ]]; then
+    minutes=$((seconds / $SECONDS_IN_MINUTE))
+    time=$(echo $time $(pluralize_with_s Minute $minutes))
+    seconds=$((seconds % $SECONDS_IN_MINUTE))
+  fi
+
+  if [[ $seconds -gt 0 ]]; then
+    time=$(echo $time $(pluralize_with_s Second $seconds))
+  fi
+
+  echo $time
+}
+
+print_nvim_age() {
+  human_time $(nvim_age)
+  press_any_key
+}
+
+TRANSFORMED_ARGS=()
+PRINT_NVIM_AGE=false
+
+parse_args() {
+  debug ARGS: \"$@\"
+  while true; do
+    case $1 in
+      --print-nvim-age) PRINT_NVIM_AGE=true ;;
+      --)  shift; break ;;
+      ?*) TRANSFORMED_ARGS+=($1) ;;
+      *) break ;;
+    esac
+
+    shift
+  done
+}
+
+parse_args $@
+debug "NVIM_EXISTS: $(nvim_exists; echo $?)"
+debug "TRANSFORMED_ARGS: \"${TRANSFORMED_ARGS[@]}\""
+
+if $PRINT_NVIM_AGE; then
+  if nvim_exists; then
+    print_nvim_age
+  else
+    echo "${NVIM}: file not found"
+  fi
+fi
+
+if ! nvim_exists; then
+  install_or_update_nvim
+elif is_nightly_nvim_too_old; then
+  if ! is_nvim_binary_writable; then
+    echo "It looks like we can't write to $NVIM:"
+    echo "please run sudo chown -R $(whoami) ${NVIM} && sudo chmod u+x ${NVIM} and run nvim again"
+    exit 1
+  fi
+
+  install_or_update_nvim
+fi
+
+$NVIM ${TRANSFORMED_ARGS[@]}
