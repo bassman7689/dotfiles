@@ -68,3 +68,6 @@ fi
 if app_exists tmux; then
   create_file_link $PWD/tmux/.tmux.conf $HOME/.tmux.conf
 fi
+
+create_file_link $PWD/git/.gitconfig $HOME/.gitconfig
+create_dir_link $PWD/git/.git-template $HOME/.git-template

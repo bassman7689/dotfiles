@@ -1,0 +1,5 @@
+[user]
+  name = Sean Mikul Rodman
+  email = srodman@fb.com
+[init]
+	templateDir = /Users/srodman/.git-template
