@@ -20,7 +20,18 @@ return require('packer').startup(function(use)
   use 'sheerun/vim-polyglot'
 
   -- awesome statusline
-  use 'vim-airline/vim-airline'
+  use {
+    'vim-airline/vim-airline',
+    requires = {
+      'joshdick/onedark.vim'
+    },
+    after = {
+      'joshdick/onedark.vim'
+    },
+    config = function()
+      vim.g.airline_theme = 'onedark'
+    end,
+  }
 
   -- configure the builtin lsp
   use 'neovim/nvim-lspconfig'
@@ -51,7 +62,13 @@ return require('packer').startup(function(use)
     },
   }
 
-  use 'joshdick/onedark.vim'
+  use {
+    'joshdick/onedark.vim',
+    config = function()
+      vim.opt.termguicolors = true
+      vim.cmd [[colorscheme onedark]]
+    end,
+  }
 
   -- cool startup screen
   use 'mhinz/vim-startify'
