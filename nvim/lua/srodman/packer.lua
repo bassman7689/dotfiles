@@ -19,18 +19,27 @@ return require('packer').startup(function(use)
   -- tons of language highlight goodness
   use 'sheerun/vim-polyglot'
 
+  -- Great colorscheme
+  use {
+    'ajmwagar/vim-deus',
+    config = function()
+      vim.opt.termguicolors = true
+      vim.cmd [[colorscheme deus]]
+    end,
+  }
+
   -- awesome statusline
   use {
     'vim-airline/vim-airline',
-    requires = {
-      'joshdick/onedark.vim'
-    },
-    after = {
-      'joshdick/onedark.vim'
-    },
-    config = function()
-      vim.g.airline_theme = 'onedark'
-    end,
+    -- requires = {
+    --   'ajmwagar/vim-deus'
+    -- },
+    -- after = {
+    --   'vim-deus'
+    -- },
+    -- config = function()
+    --   vim.g.airline_theme = 'deus'
+    -- end,
   }
 
   -- configure the builtin lsp
@@ -62,27 +71,11 @@ return require('packer').startup(function(use)
     },
   }
 
-  use {
-    'joshdick/onedark.vim',
-    config = function()
-      vim.opt.termguicolors = true
-      vim.cmd [[colorscheme onedark]]
-    end,
-  }
-
   -- cool startup screen
   use 'mhinz/vim-startify'
 
   -- local autosave.nvim plugin, my first plugin!
   -- use '~/nvim_plugins/autosave.nvim'
-
-  -- Personal wiki testing
-  use 'vimwiki/vimwiki'
-  -- for markdown rendering
-  -- use {
-  --   'npxbr/glow.nvim',
-  --   run = ':GlowInstall',
-  -- }
 
   -- Need to change surrounding things too much not to have this
   -- Plus, Its tpope!
@@ -108,7 +101,4 @@ return require('packer').startup(function(use)
     },
     tag = "v2.12.2",
   }
-
-  -- Auto Pairs of things
-  use 'jiangmiao/auto-pairs'
 end)
