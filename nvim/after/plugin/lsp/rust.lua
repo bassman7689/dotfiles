@@ -27,6 +27,9 @@ augroup END
 --vim.api.nvim_set_keymap('n', '<Leader>rc', ':lua require(\'rust-tools.open_cargo_toml\').open_cargo_toml()<CR>', {noremap = true, silent = true})
 --
 require('lspconfig').rust_analyzer.setup({
+  cmd={
+    "/home/srodman/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer",
+  },
   cmd_env = {
     RA_LOG = "project_model=debug",
   },

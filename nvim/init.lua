@@ -11,3 +11,7 @@ require('srodman.autocommands')
 
 vim.api.nvim_command('command! -nargs=1 Exec :lua require(\'srodman.helpers\').exec(<q-args>)')
 vim.api.nvim_command('command! -nargs=? Scriptnames :lua require(\'srodman.helpers\').scriptnames(<q-args>)')
+
+require('srodman.experiments')
+
+vim.api.nvim_command('command! -nargs=? Scratch :lua require(\'srodman.experiments\').scratch(<q-args>)')

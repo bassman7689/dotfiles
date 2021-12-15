@@ -22,6 +22,10 @@ local function close_window_and_delete_buffer(winnr)
   end
 end
 
+M.create_unlisted_scratch_buffer = function()
+  return vim.api.nvim_create_buf(false, true)
+end
+
 M.close_floating_windows = function()
   local windows = vim.fn.getwininfo()
   for _, win in ipairs(windows) do

@@ -101,4 +101,26 @@ return require('packer').startup(function(use)
     },
     tag = "v2.12.2",
   }
+
+  use {
+    'junegunn/fzf',
+    run = './install --bin',
+  }
+
+  use {
+    'junegunn/fzf.vim',
+    after = 'fzf',
+  }
+
+  -- Zettelkasten plugin
+  use {
+      'aarleks/zettel.vim',
+      requires = {
+        'junegunn/fzf.vim'
+      },
+      config = function()
+        vim.g.zettelkasten = '~/.notes/'
+      end,
+  }
+
 end)

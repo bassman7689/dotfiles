@@ -52,7 +52,7 @@ get_os() {
 general_install() {
   if app_exists nvim; then
     create_dir_link $PWD/nvim $HOME/.config/nvim
-    create_dir_link $PWD/vimwiki $HOME/vimwiki
+    create_dir_link $PWD/notes $HOME/.notes
   fi
 
   if app_exists kitty; then
