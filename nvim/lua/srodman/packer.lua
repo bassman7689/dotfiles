@@ -2,7 +2,7 @@ vim.cmd [[packadd packer.nvim]]
 
 -- Find a better place to put this, has to be set before vimwiki is installed
 -- for some reason.
-vim.g.vimwiki_list = {{path="~/vimwiki/", syntax="markdown", ext=".md"}}
+vim.g.vimwiki_list = { { path = "~/vimwiki/", syntax = "markdown", ext = ".md" } }
 
 return require('packer').startup(function(use)
   -- have packer manage itself
@@ -20,26 +20,26 @@ return require('packer').startup(function(use)
   use 'sheerun/vim-polyglot'
 
   -- Great colorscheme
-  use {
-    'ajmwagar/vim-deus',
-    config = function()
-      vim.opt.termguicolors = true
-      vim.cmd [[colorscheme deus]]
-    end,
-  }
+  -- use {
+  --   'ajmwagar/vim-deus',
+  --   config = function()
+  --     vim.opt.termguicolors = true
+  --     vim.cmd [[colorscheme deus]]
+  --   end,
+  -- }
 
   -- awesome statusline
   use {
     'vim-airline/vim-airline',
-    -- requires = {
-    --   'ajmwagar/vim-deus'
-    -- },
-    -- after = {
-    --   'vim-deus'
-    -- },
-    -- config = function()
-    --   vim.g.airline_theme = 'deus'
-    -- end,
+    requires = {
+      'vim-airline/vim-airline-themes',
+      'ajmwagar/vim-deus'
+    },
+    config = function()
+      vim.opt.termguicolors = true
+      vim.cmd [[colorscheme deus]]
+      vim.g.airline_theme = 'deus'
+    end,
   }
 
   -- configure the builtin lsp
@@ -90,18 +90,6 @@ return require('packer').startup(function(use)
   -- Awesomeness for vcs
   use 'mhinz/vim-signify'
 
-  -- Awesome Lisp Environment
-  use 'Olical/conjure'
-
-  -- Fennel setup with Aniseed for nvim
-  use {
-    'Olical/nvim-local-fennel',
-    requires = {
-      'Olical/aniseed',
-    },
-    tag = "v2.12.2",
-  }
-
   use {
     'junegunn/fzf',
     run = './install --bin',
@@ -114,13 +102,19 @@ return require('packer').startup(function(use)
 
   -- Zettelkasten plugin
   use {
-      'aarleks/zettel.vim',
-      requires = {
-        'junegunn/fzf.vim'
-      },
-      config = function()
-        vim.g.zettelkasten = '~/.notes/'
-      end,
+    'aarleks/zettel.vim',
+    requires = {
+      'junegunn/fzf.vim'
+    },
+    config = function()
+      vim.g.zettelkasten = '~/.notes/'
+    end,
   }
 
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    run = ':TSUpdate',
+  }
+
+  use 'nvim-treesitter/nvim-treesitter-context'
 end)

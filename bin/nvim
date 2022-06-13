@@ -3,7 +3,7 @@
 SECONDS_IN_MINUTE=60
 SECONDS_IN_HOUR=$(($SECONDS_IN_MINUTE*60))
 SECONDS_IN_DAY=$(($SECONDS_IN_HOUR*24))
-NVIM=/usr/local/bin/nvim
+NVIM=/opt/homebrew/bin/nvim
 CURRENT_TIME=$(date +%s)
 DEBUG=false
 
